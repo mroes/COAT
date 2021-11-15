@@ -93,8 +93,10 @@ result$embargo.time <- NA
 result$publication.date <- NA
 result$embargo.date <- NA
 result$embargo.source <- NA
-result.names <- c("identifier","year","institution","country", "licence.url","licence.source","version","version.source","APC","APC.source","embargo.time","publication.data","embargo.date","embargo.source","oaversion.link","oa.place","oa.place.source","timestamp")
-result.c <- result %>% select(doi, Year, Institution, Country,Licence,Licence.source,doi.oaversion,version.source,APC, APC.source, embargo.time,publication.date,embargo.date,embargo.source, doi.oaurl,doi.hosttype,doi.hosttype,oa.place.source) %>% mutate (timestamp = Sys.time())
+#result.names <- c("identifier","year","institution","country", "licence.url","licence.source","version","version.source","APC","APC.source","embargo.time","publication.data","embargo.date","embargo.source","oaversion.link","oa.place","oa.place.source","timestamp")
+#result.c <- result %>% select(doi, Year, Institution, Country,Licence,Licence.source,doi.oaversion,version.source,APC, APC.source, embargo.time,publication.date,embargo.date,embargo.source, doi.oaurl,doi.hosttype,doi.hosttype,oa.place.source) %>% mutate (timestamp = Sys.time())
+result.names <- c("doi","year","institution","country", "lic.url","licence.source","doi.oaversion","version.source","APC","APC.source","embargo.time","publication.data","embargo.date","embargo.source","oaversion.link","doi.hosttype","oa.place.source","DOAJ.result", "DOAJ.licence", "amount", "in.openapc", "hybrid","timestamp")
+result.c <- result %>% select(doi, Year, Institution, Country,Licence,Licence.source,doi.oaversion,version.source,APC, APC.source, embargo.time,publication.date,embargo.date,embargo.source, doi.oaurl,doi.hosttype,doi.hosttype,oa.place.source,DOAJ.result,DOAJ.licence, amount,in.openapc,hybrid) %>% mutate (timestamp = Sys.time())
 colnames(result.c) <- result.names
 write_csv(result.c,"Data/oa-report-normalized.csv")
 result$version %>% unique()

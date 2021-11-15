@@ -1,7 +1,7 @@
 require(tidyverse)
 
 
-COAT_Callculation <- function(data) {
+COAT_Calculation <- function(data) {
   licence.open <- c("CC BY","CC BY-SA","http://creativecommons.org/licenses/by/4.0/","http://creativecommons.org/licenses/by/4.0","https://creativecommons.org/licenses/by/4.0/","https://creativecommons.org/licenses/by-sa/4.0/","https://creativecommons.org/licenses/by-sa/4.0/"," http://creativecommons.org/licenses/by/3.0/")
   licence.free <- c("CC BY-NC","CC BY-NC-SA","CC BY-ND","CC BY NC-ND","http://creativecommons.org/licenses/by-nc-sa/4.0/","http://creativecommons.org/licenses/by-nc-nd/4.0/","http://creativecommons.org/licenses/by-nc-nd/3.0/")   
   coat.place <- 4
@@ -38,10 +38,13 @@ COAT_Callculation <- function(data) {
       if (data$hybrid) coat.conditions <-  3 else coat.conditions <-  2
     }
   }
-  if (!is.null(data$ammount)) {
-  if (!is.na(data$ammount)) {
-    if (data$ammount == 0) coat.conditions <- 1
-  }}
+  if (!is.null(data$amount)) {
+    if (!is.na(data$amount)) {
+      amount <- cnvStr2Numeric(data$amount)
+      if (amount == 0) 
+        coat.conditions <- 1
+    }
+  }
   
   # identification of licence does not work correctly 
   if (data$lic.url %in% licence.open) coat.licence = 1
@@ -52,15 +55,22 @@ COAT_Callculation <- function(data) {
   tibble(doi = data$doi,year= data$year,coat.place,coat.licence,coat.version,coat.embargo,coat.conditions)
 }
 
+cnvStr2Numeric <- function(str) {
+  value = unlist(strsplit(amount, " ", fixed = TRUE))[1]
+  # does not consider doubles, e.g. 3920.59 => 3920
+  n = strtoi(value)
+}
+
 
 # Require a table with the following informations
 # DOI
 # 
-result <- read_csv("Data/OA-Information.csv")
+#result <- read_csv("Data/OA-Information.csv")
+result <- read_csv("Data/oa-report-normalized.csv")
 
 coat.result <- tibble(doi = 0,year =0, coat.place= 0,coat.licence= 0,coat.version= 0,coat.embargo= 0,coat.conditions= 0)
 for (i in 1:nrow(result)) {
-  coat.result <- rbind (coat.result,COAT_Callculation(result[i,]))
+  coat.result <- rbind (coat.result,COAT_Calculation(result[i,]))
 }
 coat.result <- coat.result[-1,] 
 write_csv(coat.result,"Data/COAT.csv")

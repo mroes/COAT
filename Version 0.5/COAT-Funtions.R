@@ -14,7 +14,7 @@
 # * OpenAPC
 # * DOAJ
 # * Unpaywall
-# Plane improvements
+# Planed improvements
 # * Sherpa Romeo
  
 require(dplyr)
@@ -25,15 +25,15 @@ require(xml2)
 require(httr)
 
 # Download  last version of required data 
-download.file("https://doaj.org/csv", destfile = "Data/DOAJ.csv")
-download.file("https://github.com/OpenAPC/openapc-de/raw/master/data/apc_de.csv", destfile = "Data/OpenAPC.csv")
-download.file("https://github.com/OpenAPC/openapc-de/raw/master/data/offsetting/offsetting.csv", destfile = "Data/Offsetting.csv")
+#download.file("https://doaj.org/csv", destfile = "Data/DOAJ.csv")
+#download.file("https://github.com/OpenAPC/openapc-de/raw/master/data/apc_de.csv", destfile = "Data/OpenAPC.csv")
+#download.file("https://github.com/OpenAPC/openapc-de/raw/master/data/offsetting/offsetting.csv", destfile = "Data/Offsetting.csv")
 
 # Input data
 # Requires a csv file with the following information
 # DOI: mandatory
 # Year: optional
-# Insitution: optional
+# Institution: optional
 # Country: optional
 
 input.data <- read_csv("Data/inputdata.csv")
@@ -160,7 +160,7 @@ cr.result <- NA
 # Reading the used Data Files in the global environment
 DOAJ = read_csv("Data/DOAJ.csv")
 openapc = read_csv("Data/OpenAPC.csv")
-openapc.offsetting = read_csv("Data/Offsetting.csv")
+#openapc.offsetting = read_csv("Data/Offsetting.csv")
 colnames(DOAJ) <- make.names(colnames(DOAJ))
 
 # Check which fields are part of the input.data
@@ -182,7 +182,8 @@ doi.excluded <- cr.result %>% filter(issn=="no ISSN") %>% .$doi
 
 cr.result.included <- cr.result %>% filter((!issn=="no ISSN"))
 
-issn.list <- append(cr.result.included$issn,cr.result.temp$issn2)
+#issn.list <- append(cr.result.included$issn,cr.result.temp$issn2)
+issn.list <- cr.result.included$issn
 issn.list <- unique(issn.list)
 
 # Check four the journals DOAJ Data for OA information
@@ -225,4 +226,4 @@ sherpa.romeo <- function (ISSN) {
 
   tibble(ISSN,embargo.time,embargo.timeframe)
 }
-sherpa.romeo("1095-9203")
+#sherpa.romeo("1095-9203")
