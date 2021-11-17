@@ -52,7 +52,8 @@ COAT_Calculation <- function(data) {
   if (data$DOAJ.licence %in% licence.open) coat.licence  <- 1
   if (data$DOAJ.licence %in% licence.free) coat.licence  <- 2
   
-  tibble(doi = data$doi,year= data$year,coat.place,coat.licence,coat.version,coat.embargo,coat.conditions)
+  color <- mapColor(coat.place,coat.licence,coat.version,coat.embargo,coat.conditions)
+  tibble(doi = data$doi,year= data$year,coat.place,coat.licence,coat.version,coat.embargo,coat.conditions, color)
 }
 
 cnvStr2Numeric <- function(str) {
@@ -61,6 +62,22 @@ cnvStr2Numeric <- function(str) {
   n = strtoi(value)
 }
 
+color1 <- c("gold",1,4,1,1,3)
+color2 <- c("green",2,4,4,4,1)
+color3 <- c("closed",4,4,4,4,4)
+color4 <- c("closed",4,4,4,4,4)
+
+mapColor <- function(place, licence, version, embargo, conditions) {
+  coat.result <- c(place, licence, version, embargo, conditions)
+  coat.result
+  
+  if (all(coat.result <= color1[-1])) {result.color = color1[1]} else {
+    if (all(coat.result <= color2[-1])) {result.color = color2[1]} else
+      if (all(coat.result <= color3[-1])) {result.color = color3[1]} else {
+        result.color <-  color4[1]
+      }
+  }
+}
 
 # Require a table with the following informations
 # DOI
@@ -68,9 +85,9 @@ cnvStr2Numeric <- function(str) {
 #result <- read_csv("Data/OA-Information.csv")
 result <- read_csv("Data/oa-report-normalized.csv")
 
-coat.result <- tibble(doi = 0,year =0, coat.place= 0,coat.licence= 0,coat.version= 0,coat.embargo= 0,coat.conditions= 0)
+coat.result <- tibble(doi = 0,year =0, coat.place= 0,coat.licence= 0,coat.version= 0,coat.embargo= 0,coat.conditions= 0, color="unkown")
 for (i in 1:nrow(result)) {
-  coat.result <- rbind (coat.result,COAT_Calculation(result[i,]))
+  coat.result <- rbind (coat.result, COAT_Calculation(result[i,]))
 }
 coat.result <- coat.result[-1,] 
 write_csv(coat.result,"Data/COAT.csv")
