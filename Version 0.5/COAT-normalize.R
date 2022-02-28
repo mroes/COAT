@@ -73,13 +73,13 @@ result <- result %>% mutate(Licence.source = case_when(
   is.na(lic.url) ~ "none",
   lic.url != "protected" ~ "CrossRef"))
 result <- result %>% mutate(APC = case_when(
-   !(is.na(oa.fee))  ~ oa.fee,
-   !(is.na(oa.fee2)) ~ oa.fee2, 
-  amount > 0 ~ as.character(amount)))
+   !(is.na(oa.fee))  ~ as.character(oa.fee),
+   !(is.na(oa.fee2)) ~ as.character(oa.fee2), 
+  (amount > 0) ~ as.character(amount)))
 result <- result %>% mutate(APC.source = case_when(
   !(is.na(oa.fee))  ~ "DOAJ",
   !(is.na(oa.fee2)) ~ "DOAJ", 
-  amount > 0 ~ "OpenAPC"))
+  (amount > 0) ~ "OpenAPC"))
 result <- result %>% mutate(version = case_when(
   DOAJ.result ~ "PublisherVersion",
   !(is.na(doi.oaversion))  ~ doi.oaversion))
